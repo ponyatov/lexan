@@ -1,0 +1,24 @@
+%{
+#include "hpp.hpp"
+Sym module(MODULE);
+%}
+%defines %union { Sym*o; }
+%token <o> SYM
+%token <o> LB RB LQ RQ LC RC
+%token <o> EQ AT
+%type <o> ex scalar list
+
+%left EQ
+%left AT
+%%
+REPL	: | REPL ex		{ module.push($2); } ;
+scalar	: SYM ;
+ex		: scalar
+		| LQ list RQ	{ $$=$2; }
+		| ex EQ ex		{ $$=$2; $$->push($1); $$->push($3); }
+		| ex AT ex		{ $$=$2; $$->push($1); $$->push($3); }
+;
+list	: 				{ $$=new Sym("",""); }
+	 	| list ex		{ $$=$1; $$->push($2); }
+;
+%%

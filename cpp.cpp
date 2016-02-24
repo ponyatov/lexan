@@ -21,7 +21,7 @@ Sym* Sym::eval() {
 	for (auto it=nest.begin(),e=nest.end();it!=e;it++) (*it)=(*it)->eval();
 	return this; }
 
-Sym* Sym::eq(Sym*o) { env->set(val,o); return o; }
+Sym* Sym::eq(Sym*o) { glob.set(val,o); return o; }
 
 List::List():Sym("","") {}
 

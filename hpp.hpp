@@ -27,13 +27,14 @@ struct Sym {
 	virtual string tagval(); string tagstr();
 	virtual Sym* eval();
 	virtual Sym* eq(Sym*);
+	virtual Sym* at(Sym*);
 };
 
 struct List: Sym { List(); };
 
 struct Op: Sym { Op(string); Sym*eval(); };
 
-struct Lambda: Sym { Lambda(); Sym*eval(); };
+struct Lambda: Sym { Lambda(); Sym*eval(); Sym*at(Sym*); };
 
 extern int yylex();
 extern int yylineno;

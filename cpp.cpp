@@ -22,24 +22,30 @@ Sym* Sym::eval() {
 	return this; }
 
 Sym* Sym::eq(Sym*o) { glob.set(val,o); return o; }
+Sym* Sym::at(Sym*o) { push(o); return this; }
 
 List::List():Sym("","") {}
 
 Op::Op(string V):Sym("op",V) {}
 Sym* Op::eval() {
-	if (val=="=") return nest[0]->eq(nest[1]->eval()); else Sym::eval();
+	if (val=="=") return nest[0]->eq(nest[1]->eval());
+	else Sym::eval();
+	if (val=="@") return nest[0]->at(nest[1]->eval()); 
 	return this;
 }
 
 Lambda::Lambda():Sym("^","^") { env = new Env(&glob); }
 Sym* Lambda::eval() { return this; }
+Sym* Lambda::at(Sym*o) {
+	env->set(env->iron.begin()->first,o);
+	return this; }
 
 Env::Env(Env*X) { next=X; }
 void Env::set(string V,Sym*o) { iron[V]=o; }
 void Env::par(Sym*o) { set(o->val,o); }
 string Env::dump() { string S;
 	for (auto it=iron.begin(),e=iron.end();it!=e;it++)
-		S += ","+it->first;
+		S += ","+it->first+"="+it->second->tagval();
 	return S; }
 
 Sym* Env::lookup(string V) {

@@ -29,9 +29,11 @@ struct Sym {
 	virtual Sym* eq(Sym*);
 };
 
+struct List: Sym { List(); };
+
 struct Op: Sym { Op(string); Sym*eval(); };
 
-struct Lambda: Sym { Lambda(); };
+struct Lambda: Sym { Lambda(); Sym*eval(); };
 
 extern int yylex();
 extern int yylineno;

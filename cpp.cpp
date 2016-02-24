@@ -4,7 +4,7 @@ void yyerror(string msg) { cout<<YYERR; cerr<<YYERR; exit(-1); }
 int main() { glob_init(); yyparse(); 
 	cout<<module.eval()->dump()<<"\n\n"; return 0; }
 
-Sym::Sym(string T,string V) { tag=T; val=V; env=new Env(&glob); }
+Sym::Sym(string T,string V) { tag=T; val=V; env=new Env(NULL); }//&glob; }
 Sym::Sym(string V):Sym("",V) {}
 void Sym::push(Sym*o) { nest.push_back(o); }
 
@@ -20,16 +20,19 @@ Sym* Sym::eval() {
 	for (auto it=nest.begin(),e=nest.end();it!=e;it++) (*it)=(*it)->eval();
 	return this; }
 
-Sym* Sym::eq(Sym*o) { env->set(val,o); return this; }
+Sym* Sym::eq(Sym*o) { env->set(val,o); return o; }
+
+List::List():Sym("","") {}
 
 Op::Op(string V):Sym("op",V) {}
 Sym* Op::eval() {
+	if (val=="=") return nest[0]->eq(nest[1]->eval());
 	Sym*E = env->lookup(val); if (E) return E; else Sym::eval();
-	if (val=="=") return nest[0]->eq(nest[1]);
 	return this;
 }
 
 Lambda::Lambda():Sym("^","^") { env = new Env(&glob); }
+Sym* Lambda::eval() { return this; }
 
 Env::Env(Env*X) { next=X; }
 void Env::set(string V,Sym*o) { iron[V]=o; }

@@ -43,7 +43,7 @@ Sym* Op::eval() {
 Lambda::Lambda():Sym("^","^") { env = new Env(&glob); }
 Sym* Lambda::eval() { return this; }
 Sym* Lambda::at(Sym*o) {
-	Sym*L = nest[0]->copy(env);
+	Sym*L = copy(env);//nest[0]->copy(env);
 	L->env->set(env->iron.begin()->first,o);
 	return L->eval(); }
 

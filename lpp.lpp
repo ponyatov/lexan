@@ -14,6 +14,8 @@ string LexString;
 
 [a-zA-Z0-9_.]+		TOC(Sym,SYM)
 
+\(					TOC(Op,LB)
+\)					TOC(Op,RB)
 \[					TOC(Op,LQ)
 \]					TOC(Op,RQ)
 \{					TOC(Op,LC)

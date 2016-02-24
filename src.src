@@ -1,5 +1,5 @@
 
-p.p = {P: P+'pp'}
+(p.p = {P: Z: P+'pp'} )@OO
 
 skelex = [
 	files = [ src.src log.log
@@ -9,5 +9,5 @@ skelex = [
 ]
 
 skelex
-p.p@x
+(p.p@x)@y@z
 Y@Z

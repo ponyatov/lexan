@@ -15,7 +15,7 @@ Sym module("module",MODULE);
 %left ADD
 %left DIV
 %%
-REPL	: | REPL ex			{ module.push($2->eval()); } ;
+REPL	: | REPL ex			{ module.push($2); } ;
 scalar	: SYM ;
 ex		: scalar
 		| LQ list RQ		{ $$=$2; }

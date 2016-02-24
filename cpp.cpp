@@ -8,6 +8,12 @@ Sym::Sym(string T,string V) { tag=T; val=V; env=new Env(&glob); }
 Sym::Sym(string V):Sym("",V) {}
 void Sym::push(Sym*o) { nest.push_back(o); }
 
+Sym* Sym::copy(Env*E) {
+	Sym*R = new Sym(tag,val); R->env=E;
+	for (auto it=nest.begin(),e=nest.end();it!=e;it++)
+		R->push((*it)->copy(E));
+	return R; }
+
 string Sym::tagval() { return "<"+tag+":"+val+">"; }
 string Sym::pad(int n) { string S; for (int i=0;i<n;i++) S+='\t'; return S; }
 string Sym::dump(int depth) {
@@ -37,8 +43,9 @@ Sym* Op::eval() {
 Lambda::Lambda():Sym("^","^") { env = new Env(&glob); }
 Sym* Lambda::eval() { return this; }
 Sym* Lambda::at(Sym*o) {
-	env->set(env->iron.begin()->first,o);
-	return this; }
+	Sym*L = nest[0]->copy(env);
+	L->env->set(env->iron.begin()->first,o);
+	return L->eval(); }
 
 Env::Env(Env*X) { next=X; }
 void Env::set(string V,Sym*o) { iron[V]=o; }

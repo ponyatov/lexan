@@ -20,7 +20,7 @@ extern Env glob;
 extern void glob_init();
 struct Sym {
 	string tag,val;
-	Sym(string,string); Sym(string);
+	Sym(string,string); Sym(string); Sym* copy(Env*);
 	vector<Sym*> nest; void push(Sym*); void pop();
 	Env* env;
 	string dump(int depth=0); string pad(int);

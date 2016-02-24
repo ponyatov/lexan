@@ -1,19 +1,31 @@
 %{
 #include "hpp.hpp"
+string LexString;
 %}
 %option noyywrap
 %option yylineno
+%x lexstring
 %%
 #[^\n]*				{}
+
+'					{BEGIN(lexstring); LexString="";}
+<lexstring>'		{BEGIN(INITIAL); yylval.o = new Sym(LexString); return SYM;}
+<lexstring>.		{LexString+=yytext[0];}
 
 [a-zA-Z0-9_.]+		TOC(Sym,SYM)
 
 \[					TOC(Op,LQ)
 \]					TOC(Op,RQ)
+\{					TOC(Op,LC)
+\}					TOC(Op,RC)
 
 \=					TOC(Op,EQ)
 \@					TOC(Op,AT)
+\:					TOC(Op,COLON)
 
-[ \t\r\n]+			{}
-.					{}
+\+					TOC(Op,ADD)
+\/					TOC(Op,DIV)
+
+[ \t\r\n]	{}
+
 %%

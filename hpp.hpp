@@ -13,6 +13,7 @@ struct Env {
 	Env(Env*); Env* next;
 	Sym* lookup(string);
 	void set(string,Sym*);
+	void par(Sym*);
 	string dump();
 };
 extern Env glob;
@@ -29,6 +30,8 @@ struct Sym {
 };
 
 struct Op: Sym { Op(string); Sym*eval(); };
+
+struct Lambda: Sym { Lambda(); };
 
 extern int yylex();
 extern int yylineno;

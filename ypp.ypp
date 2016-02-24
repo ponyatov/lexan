@@ -5,20 +5,31 @@ Sym module(MODULE);
 %defines %union { Sym*o; }
 %token <o> SYM
 %token <o> LB RB LQ RQ LC RC
-%token <o> EQ AT
-%type <o> ex scalar list
+%token <o> EQ AT COLON
+%token <o> ADD DIV
+%type <o> ex scalar list lambda
 
 %left EQ
 %left AT
+%left COLON
+%left ADD
+%left DIV
 %%
-REPL	: | REPL ex		{ module.push($2); } ;
+REPL	: | REPL ex			{ module.push($2); } ;
 scalar	: SYM ;
 ex		: scalar
-		| LQ list RQ	{ $$=$2; }
-		| ex EQ ex		{ $$=$2; $$->push($1); $$->push($3); }
-		| ex AT ex		{ $$=$2; $$->push($1); $$->push($3); }
+		| LQ list RQ		{ $$=$2; }
+		| LC lambda RC		{ $$=$2; }
+		| ex EQ ex			{ $$=$2; $$->push($1); $$->push($3); }
+		| ex AT ex			{ $$=$2; $$->push($1); $$->push($3); }
+		| ex ADD ex			{ $$=$2; $$->push($1); $$->push($3); }
+		| ex DIV ex			{ $$=$2; $$->push($1); $$->push($3); }
 ;
-list	: 				{ $$=new Sym("",""); }
-	 	| list ex		{ $$=$1; $$->push($2); }
+list	: 					{ $$=new Sym("",""); }
+	 	| list ex			{ $$=$1; $$->push($2); }
+;
+lambda	: 					{ $$=new Lambda(); }
+		| lambda SYM COLON	{ $$=$1; $$->env->par($2); }
+	 	| lambda ex			{ $$=$1; $$->push($2); }
 ;
 %%

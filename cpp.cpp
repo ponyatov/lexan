@@ -4,14 +4,14 @@ void yyerror(string msg) { cout<<YYERR; cerr<<YYERR; exit(-1); }
 int main() { glob_init(); yyparse(); 
 	cout<<module.eval()->dump()<<"\n\n"; return 0; }
 
-Sym::Sym(string T,string V) { tag=T; val=V; env=new Env(&glob); }
+Sym::Sym(string T,string V,Env*E) { tag=T; val=V; env=new Env(E); }
 Sym::Sym(string V):Sym("",V) {}
 void Sym::push(Sym*o) { nest.push_back(o); }
 
 Sym* Sym::copy(Env*E) {
-	Sym*R = new Sym(tag,val); R->env=E;
+	Sym*R = new Sym(tag,val,E);
 	for (auto it=nest.begin(),e=nest.end();it!=e;it++)
-		R->push((*it)->copy(E));
+		R->push((*it)->copy(R->env));
 	return R; }
 
 string Sym::tagval() { return "<"+tag+":"+val+">"; }

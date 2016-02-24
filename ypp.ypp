@@ -1,6 +1,6 @@
 %{
 #include "hpp.hpp"
-Sym module(MODULE);
+Sym module("module",MODULE);
 %}
 %defines %union { Sym*o; }
 %token <o> SYM
@@ -15,7 +15,7 @@ Sym module(MODULE);
 %left ADD
 %left DIV
 %%
-REPL	: | REPL ex			{ module.push($2); } ;
+REPL	: | REPL ex			{ module.push($2->eval()); } ;
 scalar	: SYM ;
 ex		: scalar
 		| LQ list RQ		{ $$=$2; }

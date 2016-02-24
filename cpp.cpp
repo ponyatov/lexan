@@ -4,7 +4,7 @@ void yyerror(string msg) { cout<<YYERR; cerr<<YYERR; exit(-1); }
 int main() { glob_init(); yyparse(); 
 	cout<<module.eval()->dump()<<"\n\n"; return 0; }
 
-Sym::Sym(string T,string V) { tag=T; val=V; env=new Env(NULL); }//&glob; }
+Sym::Sym(string T,string V) { tag=T; val=V; env=new Env(&glob); }
 Sym::Sym(string V):Sym("",V) {}
 void Sym::push(Sym*o) { nest.push_back(o); }
 
@@ -17,6 +17,7 @@ string Sym::dump(int depth) {
 	return S; }
 
 Sym* Sym::eval() {
+	Sym*E = env->lookup(val); if (E) return E;
 	for (auto it=nest.begin(),e=nest.end();it!=e;it++) (*it)=(*it)->eval();
 	return this; }
 
@@ -26,8 +27,7 @@ List::List():Sym("","") {}
 
 Op::Op(string V):Sym("op",V) {}
 Sym* Op::eval() {
-	if (val=="=") return nest[0]->eq(nest[1]->eval());
-	Sym*E = env->lookup(val); if (E) return E; else Sym::eval();
+	if (val=="=") return nest[0]->eq(nest[1]->eval()); else Sym::eval();
 	return this;
 }
 

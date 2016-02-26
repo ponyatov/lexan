@@ -30,6 +30,8 @@ struct Sym {
 	virtual Sym* at(Sym*);
 };
 
+struct Str: Sym { Str(string); Sym*eval(); };
+
 struct List: Sym { List(); };
 
 struct Op: Sym { Op(string); Sym*eval(); };

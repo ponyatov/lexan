@@ -30,6 +30,9 @@ Sym* Sym::eval() {
 Sym* Sym::eq(Sym*o) { glob.set(val,o); return o; }
 Sym* Sym::at(Sym*o) { push(o); return this; }
 
+Str::Str(string V):Sym("str",V) {}
+Sym* Str::eval() { return this; }
+
 List::List():Sym("","") {}
 
 Op::Op(string V):Sym("op",V) {}

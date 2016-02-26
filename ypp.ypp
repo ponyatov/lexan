@@ -1,13 +1,14 @@
 %{
 #include "hpp.hpp"
-Sym module("module",MODULE);
+Sym module("module",MODULE);		/* translation unit */
 %}
-%defines %union { Sym*o; }
-%token <o> SYM
-%token <o> LB RB LQ RQ LC RC
-%token <o> EQ AT COLON
-%token <o> ADD DIV
-%type <o> ex scalar list lambda
+%defines %union { Sym*o; }			/* AST: symbolic type parse tree		*/
+
+%token <o> SYM NUM STR				/* scalar: symbol number 'string'		*/
+%token <o> LB RB LQ RQ LC RC		/* bracket: ( ) [ ] { }					*/
+%token <o> EQ AT TILD COLON PERC	/* operator: = @ ~ : %					*/
+%token <o> ADD SUB MUL DIV POW		/* operator: + - * / ^					*/
+%type <o> ex scalar list lambda		/* expression scalar [list] {lambda}	*/
 
 %left EQ
 %left AT
@@ -16,7 +17,7 @@ Sym module("module",MODULE);
 %left DIV
 %%
 REPL	: | REPL ex			{ module.push($2); } ;
-scalar	: SYM ;
+scalar	: SYM | STR ;
 ex		: scalar
 		| LB ex RB			{ $$=$2; }
 		| LQ list RQ		{ $$=$2; }
